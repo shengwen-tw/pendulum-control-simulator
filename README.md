@@ -1,5 +1,5 @@
 # Pendulum LQR simulator
- pendulum's linear qradratic regulator simulation written in MATLAB
+ pendulum's linear quadratic regulator simulation written in MATLAB
  
  ## Derivation
  
