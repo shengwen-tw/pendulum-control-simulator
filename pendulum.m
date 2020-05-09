@@ -31,6 +31,7 @@ time_arr = zeros(1, ITERATION_TIMES);
 x1_arr = zeros(1, ITERATION_TIMES);
 x2_arr = zeros(1, ITERATION_TIMES);
 
+tic();
 for i = 1: ITERATION_TIMES
     %update system dynamics
     x1_dot = x2;
@@ -69,14 +70,15 @@ for i = 1: ITERATION_TIMES
     x2_arr(i) = rad2deg(x2);
     time_arr(i) = i * dt;
 end
+toc();
 
 figure(1);
 subplot (2, 1, 1);
 plot(time_arr, x1_arr);
-title('eR');
+title('Pendulum LQR Control');
 xlabel('time [s]');
 ylabel('angle [deg]');
 subplot (2, 1, 2);
 plot(time_arr, x2_arr);
 xlabel('time [s]');
-ylabel('angular acceleration [deg/s]');
+ylabel('angular velocity [deg/s]');
