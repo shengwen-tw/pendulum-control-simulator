@@ -1,7 +1,12 @@
-# Pendulum LQR simulator
- pendulum's linear quadratic regulator simulation written in MATLAB
- 
- ## Derivation
+# Pendulum Control Simulator
+
+Experiments of advanced control algorithms with pendulum model written in MATLAB.
+
+Currently, the project provides two controller designs as example:
+1. Linear Quadratic Regulator
+2. H-Infinity Control
+
+## Derivation
  
 * [pdf link](https://github.com/shengwen-tw/pendulum_lqr_sim/raw/master/lqr.pdf)
 
