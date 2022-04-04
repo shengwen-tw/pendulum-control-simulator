@@ -1,5 +1,3 @@
-clf;
-
 x1 = deg2rad(0);  %angle
 x2 = 0;           %angular velocity
 u = 0;            %torque, control input
