@@ -76,14 +76,15 @@ for i = 1: ITERATION_TIMES
     
     %penalty error measurement (weighting) matrix
     C1 = [0   0
-          500 0   %weight of minimizing the angle error
+          600 0   %weight of minimizing the angle error
           0   5]; %weight of minimizing the angular velocity error
       
     %penalty error control input (weighting) matrix
     w_u = 0.1;        %weight of the control energy
-    D12 = [0           0;
-           w_u/(m*l*l) 0];
-    
+    D12 = [w_u/(m*l*l);
+           0;
+           0];
+       
     %==================%
     % y = C2*x + D21*w %
     %==================%
@@ -91,8 +92,8 @@ for i = 1: ITERATION_TIMES
     %state-feedback H-infinity control problem, i.e, C2 = I, D21 = 0
     C2 = eye(2);
     D21 = 0;
-       
-    gamma = hinf(A, D12, C1, 0);
+
+    gamma = hinf(A - B2*B2.', B1, C1-D12*B2.', 0);
     %
     C1tC1 = C1.' * C1;
     B2t = B2.';
