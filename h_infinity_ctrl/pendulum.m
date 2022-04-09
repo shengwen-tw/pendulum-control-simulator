@@ -25,6 +25,8 @@ gamma_arr = zeros(1, ITERATION_TIMES);
 
 tic();
 for i = 1: ITERATION_TIMES
+    disp(i);
+    
     %=============================%
     % generate random disturbance %
     %=============================%
@@ -75,49 +77,36 @@ for i = 1: ITERATION_TIMES
     %==================%
     
     %penalty error measurement (weighting) matrix
-    C1 = [0   0
-          600 0   %weight of minimizing the angle error
-          0   5]; %weight of minimizing the angular velocity error
+    C1 = [600 0   %weight of minimizing the angle error
+          0   5   %weight of minimizing the angular velocity error
+          0   0];
       
     %penalty error control input (weighting) matrix
     w_u = 0.1;        %weight of the control energy
-    D12 = [w_u/(m*l*l);
+    D12 = [0;
            0;
-           0];
+           w_u/(m*l*l)];
        
     %==================%
     % y = C2*x + D21*w %
     %==================%
     
-    %calculate the lower bound of the gamma
-    At = A.';
-    H = -B2 * B2.';
-    G = -C1.' * C1;
-    Z = care_sda(At, 0, H, G);
-    B1t = B1.';
-    C1t = C1.';
-    gamma_lb = hinf(A - Z*C1t*C1, C1t, B1t, 0)
-    
     %state-feedback H-infinity control problem, i.e, C2 = I, D21 = 0
     C2 = eye(2);
     D21 = 0;
-
-    %FIXME
-    gamma = gamma_lb * 1.1;
     
-    %gamma = hinf(A - B2*B2.', B1, C1-D12*B2.', 0);
-    %
-    C1tC1 = C1.' * C1;
-    B2t = B2.';
-    %
-    B = [B1, B2];
-    R = eye(2, 2);
-    R(1, 1) = -(gamma*gamma) * R(1, 1);
-    [X, L, G_dummy] = care(A, B, C1tC1, R);
+    %====================%
+    % H-infinity control %
+    %====================%
+    [gamma, X] = hinf_syn(A, B1, B2, C1, 0);
     
     %calculate the feedback control
-    C0_hat = -B2t * X;
+    C0_hat = -B2.' * X;
     u = C0_hat * [x - x_d];
+    
+    %sys=ss(A + B2*C0_hat, B1, C1 + D12*C0_hat, 0);
+    %sigma(sys, ss(gamma));
+    %pause;
     
     %record datas for plotting
     x1_arr(i) = rad2deg(x1);
