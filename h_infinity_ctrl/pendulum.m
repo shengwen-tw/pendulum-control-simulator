@@ -8,7 +8,7 @@ k = 1;            %air drag coefficient
 m = 0.5;          %mass [kg]
 
 %controller setpoint
-x1_d = deg2rad(100); %desired angle
+x1_d = deg2rad(10); %desired angle
 x2_d = deg2rad(0); %desired angular velocity
 x_d = [x1_d; x2_d];
 
@@ -30,8 +30,8 @@ for i = 1: ITERATION_TIMES
     %=============================%
     % generate random disturbance %
     %=============================%
-    sigma_d = 360; %distribution of the torque disturbance
-    tau_c = 3.2;   %correlation time of the disturbance ODE
+    sigma_d = 0.1; %distribution of the torque disturbance
+    tau_c = 0.1;   %correlation time of the disturbance ODE
     %
     inv_cor_time = -1 / tau_c;
     A_d = (-1 / tau_c) .* eye(1, 1);
@@ -77,15 +77,14 @@ for i = 1: ITERATION_TIMES
     %==================%
     
     %penalty error measurement (weighting) matrix
-    C1 = [600 0   %weight of minimizing the angle error
-          0   5   %weight of minimizing the angular velocity error
-          0   0];
+    C1 = [80 0   %weight of minimizing the angle error
+          0  10   %weight of minimizing the angular velocity error
+          0  0];
       
     %penalty error control input (weighting) matrix
-    w_u = 0.1;        %weight of the control energy
     D12 = [0;
            0;
-           w_u/(m*l*l)];
+           1];
        
     %==================%
     % y = C2*x + D21*w %
@@ -104,9 +103,13 @@ for i = 1: ITERATION_TIMES
     C0_hat = -B2.' * X;
     u = C0_hat * [x - x_d];
     
-    %sys=ss(A + B2*C0_hat, B1, C1 + D12*C0_hat, 0);
-    %sigma(sys, ss(gamma));
-    %pause;
+    %disp(gamma);
+    
+    if 0
+    sys=ss(A + B2*C0_hat, B1, C1 + D12*C0_hat, 0);
+    sigma(sys, ss(gamma));
+    pause;
+    end
     
     %record datas for plotting
     x1_arr(i) = rad2deg(x1);
